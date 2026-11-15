@@ -1,0 +1,72 @@
+name: Sync upstream
+
+on:
+  schedule:
+    # 매일 09:17 KST에 원본 main을 확인합니다. GitHub 상황에 따라 실행이 지연될 수 있습니다.
+    - cron: '17 0 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-upstream-main
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    if: github.repository == 'pnltoen/com.unity.usd-toolkit'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TARGET_REPO: pnltoen/com.unity.usd-toolkit
+      UPSTREAM_REPO: Unity-Technologies/com.unity.usd-toolkit
+    steps:
+      - name: Merge upstream main without overwriting fork changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          upstream_sha="$(gh api "repos/$UPSTREAM_REPO/git/ref/heads/main" --jq '.object.sha')"
+
+          # 일반 merge로 기존 fork commit을 보존하며, 충돌·권한 오류는 실패로 남깁니다.
+          gh api --method POST "repos/$TARGET_REPO/merges" \
+            -f base=main -f head="$upstream_sha" \
+            -f commit_message="chore: sync upstream main" --silent
+
+          behind="$(gh api "repos/$TARGET_REPO/compare/$upstream_sha...main" --jq '.behind_by')"
+          if [ "$behind" != "0" ]; then
+            echo "::error::The fork does not contain the inspected upstream commit."
+            exit 1
+          fi
+          {
+            echo "### Upstream sync"
+            echo "- Source: $UPSTREAM_REPO (main)"
+            echo "- Target: $TARGET_REPO (main)"
+            echo "- Verified upstream commit: $upstream_sha"
+            echo "- Missing upstream commits: $behind"
+            echo "- No force push or history reset is used."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Keep the schedule active during long upstream pauses
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Public repo의 60일 무활동 중단을 피하도록, 45일 이상 commit이 없을 때만
+          # 파일을 바꾸지 않는 유지용 commit을 추가합니다.
+          tip="$(gh api "repos/$TARGET_REPO/commits/main")"
+          tip_sha="$(jq -r '.sha' <<< "$tip")"
+          tree_sha="$(jq -r '.commit.tree.sha' <<< "$tip")"
+          committed_at="$(jq -r '.commit.committer.date' <<< "$tip")"
+          age_seconds=$(( $(date -u +%s) - $(date -u -d "$committed_at" +%s) ))
+          if [ "$age_seconds" -lt 3888000 ]; then
+            echo "- Keepalive: not needed (last commit is less than 45 days old)." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          keepalive_sha="$(gh api --method POST "repos/$TARGET_REPO/git/commits" \
+            -f message="chore: keep fork sync schedule active" \
+            -f tree="$tree_sha" -f "parents[]=$tip_sha" --jq '.sha')"
+          # 동시에 다른 commit이 추가되면 non-fast-forward 갱신이 거부됩니다.
+          gh api --method PATCH "repos/$TARGET_REPO/git/refs/heads/main" \
+            -f sha="$keepalive_sha" -F force=false --silent
+          echo "- Keepalive: created $keepalive_sha without changing files." >> "$GITHUB_STEP_SUMMARY"
