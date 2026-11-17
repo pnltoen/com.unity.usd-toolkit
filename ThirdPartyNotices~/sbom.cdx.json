@@ -2,7 +2,7 @@
   "$schema": "http://cyclonedx.org/schema/bom-1.6.schema.json",
   "bomFormat": "CycloneDX",
   "specVersion": "1.6",
-  "serialNumber": "urn:uuid:42b7087a-a2de-5bd4-a04b-3d73c58eac32",
+  "serialNumber": "urn:uuid:56cad410-16fb-5b2c-80f9-e5d023ea6501",
   "version": 1,
   "metadata": {
     "lifecycles": [
@@ -29,7 +29,7 @@
       "bom-ref": "com.unity.usd-toolkit",
       "type": "library",
       "name": "com.unity.usd-toolkit",
-      "version": "0.8.0-exp.1",
+      "version": "0.8.2-exp.1",
       "description": "Runtime USD toolkit for Unity applications using a custom native OpenUSD wrapper. A C# integration layer for connecting Unity to NVIDIA's Omniverse/OpenUSD ecosystem. Wraps Pixar's OpenUSD 26.05 native binaries via P/Invoke so Unity can read, write, and round-trip USD stages.",
       "licenses": [
         {
@@ -765,7 +765,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "ef2c69b6daaead018271bafdcd04892049481173f769de8348adb95f8fa30473"
+          "content": "b085737604a4bbf372064ddb0490370018b97b9f250ea731fe455cca1614c1af"
         }
       ],
       "properties": [
@@ -779,7 +779,7 @@
         },
         {
           "name": "unity:toolchain",
-          "value": "macOS 26.6.2 (25G83), Xcode 26.6 (17F113), Apple clang 21.0.0 (clang-2100.1.1.101), CMake 3.31.6 (OpenUSD) and 4.3.2 (wrapper), SDK 26.5, x86_64+arm64"
+          "value": "macOS 27.2.1 (26B131), Xcode 27.2 (27B52), Apple clang 21.0.0 (clang-2100.4.1.1), CMake 3.31.6 (OpenUSD) and 4.4.4 (wrapper), SDK 27.2, x86_64+arm64"
         },
         {
           "name": "unity:sourceCommit",
@@ -815,7 +815,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "9cca8dc59edf1272fd99422d48b404c280f6ea896d789f7c578cf6d061f49a76"
+          "content": "2ad5f816c4d13126a30e6d0d86a8cf21715cf65d830ecac22ac51980b1fd1a54"
         }
       ],
       "properties": [
@@ -865,7 +865,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "af38b5e3c8827feffd48fe308833a2467eb435216680498e46d0929b691c4bdd"
+          "content": "59a1373d81e74c1c892e4308481c75b52d1f6a9cc2a79456c668b1116b9573e8"
         }
       ],
       "properties": [
@@ -915,7 +915,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "a4e1e33c6d7e8a0dcc2f812135c174dcd58d4979eaeb50ff34e757f6789c23d7"
+          "content": "6153a1e7ef0cdddf1e6ddaacc965e7e20e8cf2e50d6887d32da6b527e1c2fbfd"
         }
       ],
       "properties": [
@@ -961,7 +961,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "d2407e44a05fbe52eb62a889e07f645cee69c76389f5334ca50e6e0907cf4403"
+          "content": "17770e8e45762e84f92e3be9a6d7f508aacec6c21e17f7f009ddaf8bf34ec131"
         }
       ],
       "properties": [
@@ -1007,7 +1007,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "1508fe7e360ff7784ea3dc1560308085adee158426d32afd08f276dbf97a2ef1"
+          "content": "541343d39797df99abb89de328837838f9667a672c2edac2005a8f34fcea2f1a"
         }
       ],
       "properties": [
@@ -1099,7 +1099,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "d7ea70e6265fee19eeddda5fcd7bb3b707a3778a489dc50691dcdb3e64fafb14"
+          "content": "560c63c66f82cdb1dd8f803a0e203b10f8cd6af752f8c8cd27233165905657f0"
         }
       ],
       "properties": [
@@ -1141,7 +1141,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "f13db2108d04511151da826db9d0a1126961189da8ecded1ae89eff812b7ea42"
+          "content": "1800d771ef01e88533f6b52335e71d23328266c3c65a90b9da94a329768a14d2"
         }
       ],
       "properties": [
@@ -1183,7 +1183,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "73947876b515880db3db7e68b8d9253ae12c9ab39c506f753ed0bdb3b0ca72cc"
+          "content": "108360fc0f02cb532cdf2bbac493bbba338694e18c2c05aaec31adba9a606d50"
         }
       ],
       "properties": [
@@ -1225,7 +1225,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "92a0a0549dfb1292f7cb9f229fd5a43b68ce487f711ea8858a6fc2c374b15372"
+          "content": "5af6b0589c76e6df305d24ca91b23cdf7c6b1184b36ed6c6a321839cd233be30"
         }
       ],
       "properties": [
@@ -1267,7 +1267,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "e583e0c8935be42906169b38c06fcede77a06fba8823a151c4894e2c588cd611"
+          "content": "0b431e72362d43f93aef73196230336812ca6f04c2bfd250cff513a969877e7b"
         }
       ],
       "properties": [
@@ -1299,7 +1299,7 @@
       "bom-ref": "wrapper-macos",
       "type": "library",
       "name": "Unity USD Toolkit native wrapper",
-      "version": "0.8.0-exp.1",
+      "version": "0.8.2-exp.1",
       "scope": "required",
       "description": "First-party native wrapper (Native~/src) built for macOS universal.",
       "licenses": [
@@ -1312,7 +1312,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "3ec3d7ee8f82aff0e1c2f5b4bdd1ece293f38bc371bcfa4ad977d9a992542e65"
+          "content": "18e2141605ac23699e8a9de32d654d46b46104bc6e987f8daf94b03e789c2805"
         }
       ],
       "properties": [
@@ -1326,11 +1326,11 @@
         },
         {
           "name": "unity:toolchain",
-          "value": "macOS 26.6.2 (25G83), Xcode 26.6 (17F113), Apple clang 21.0.0 (clang-2100.1.1.101), CMake 3.31.6 (OpenUSD) and 4.3.2 (wrapper), SDK 26.5, x86_64+arm64"
+          "value": "macOS 27.2.1 (26B131), Xcode 27.2 (27B52), Apple clang 21.0.0 (clang-2100.4.1.1), CMake 3.31.6 (OpenUSD) and 4.4.4 (wrapper), SDK 27.2, x86_64+arm64"
         },
         {
           "name": "unity:nativeApiVersion",
-          "value": "13"
+          "value": "18"
         }
       ]
     },
@@ -1338,7 +1338,7 @@
       "bom-ref": "wrapper-windows",
       "type": "library",
       "name": "Unity USD Toolkit native wrapper",
-      "version": "0.8.0-exp.1",
+      "version": "0.8.2-exp.1",
       "scope": "required",
       "description": "First-party native wrapper (Native~/src) built for Windows x64.",
       "licenses": [
@@ -1351,7 +1351,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "d1165b9efc58d293bef10fe9edfbbe36a1dd717b8306b3fbcf0e39ff3d263b43"
+          "content": "09d542d716e03cef43340fe90799738638d0ba4afed10c4799fda915b4c51b64"
         }
       ],
       "properties": [
@@ -1369,7 +1369,7 @@
         },
         {
           "name": "unity:nativeApiVersion",
-          "value": "13"
+          "value": "18"
         }
       ]
     },
@@ -1377,7 +1377,7 @@
       "bom-ref": "wrapper-linux",
       "type": "library",
       "name": "Unity USD Toolkit native wrapper",
-      "version": "0.8.0-exp.1",
+      "version": "0.8.2-exp.1",
       "scope": "required",
       "description": "First-party native wrapper (Native~/src) built for Linux x64.",
       "licenses": [
@@ -1390,7 +1390,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "46c23ead949a9d5b76c6e94da86fde97909d23e95eed40a4337d5ca23037d47d"
+          "content": "ffff2ed80edcd8081c3963b72a9f12b391402037575034b4b821453897eec9bf"
         }
       ],
       "properties": [
@@ -1408,7 +1408,7 @@
         },
         {
           "name": "unity:nativeApiVersion",
-          "value": "13"
+          "value": "18"
         }
       ]
     },
@@ -1430,7 +1430,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "6bb36210057da19850f510bdb7a4eb098ae23536ac37bc331d1a04336910a752"
+          "content": "01a353970907a7183481051e4b9d62e6c3871d18fb0c636727df21889378bb07"
         }
       ],
       "properties": [
@@ -1472,7 +1472,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "551348dba8935de148fd7318c4850103665a7707d9ab4214c979cabed9ebf9af"
+          "content": "e9e75984ac3340ea43ee634028952e66fa1f9b43ed10618ef0cf72367dba595e"
         }
       ],
       "properties": [

@@ -7,7 +7,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.2-exp.1] - 2026-11-16
+
 ### Added
+
+- **SimReady Central Loader sample**
+  Paste a file link copied from NVIDIA's SimReady Central Space
+  (`https://huggingface.co/{datasets|models}/{owner}/{repo}/{blob|resolve|raw|tree}/{revision}/{path}`)
+  into **USD Toolkit > SimReady Central Loader** or the runtime viewer (`SimReadyCentral.unity`), and
+  the asset loads with everything it composes from. A branch is resolved to its commit. The layers
+  are walked from the root, and every sublayer, reference, texture and payload of every variant
+  is fetched relative to the layer that names it. Each file is checked against the hash the Hub
+  lists, and nothing leaves the asset's folder. Downloads use HTTPS only, through `UnityWebRequest`
+  with every redirect hop checked against a host allowlist (`huggingface.co`, `us.aws.cdn.hf.co`)
+  the user can edit, under per-file and total size caps. Interrupted files resume. The cache is
+  `Library/SimReadyCache` in the Editor and `persistentDataPath/SimReadyCache` in a player.
+  The asset imports with its UsdPhysics, Physics variants stay switchable, and every physics prim
+  and PhysX attribute is logged as mapped, approximated, skipped, applied, recorded or logged.
+  Each moving part gets a drag handle like the Space's Interactive USD preview. Edit mode poses
+  the links kinematically; Play Mode or a player sets the leader's drive target. Mimic followers
+  move with their leader in both. The info panel shows the `SimReady_Metadata`, and an orbit
+  camera, grid and contact shadow complete the viewer.
+
+- **`UsdLayerInfo` (native interface 18)**
+  `UsdLayerInfo.Read(path)` opens one layer file, text or binary, without composing a stage. It
+  reports the asset paths the layer authors, payloads of every variant included, along with its
+  layer metadata (`upAxis`, `metersPerUnit`, `kilogramsPerUnit`, `defaultPrim`) and its
+  `customLayerData`, flattened. It needs the 0.8.2 native plugin, rebuilt for
+  macOS, Windows and Linux; an older plugin reports `IsSupported == false`.
+
+- **`UsdImportResult.PhysicsMapping` and `KilogramsPerUnit`**
+  One entry per physics prim the stage holds (scene, articulations, bodies, colliders, joints,
+  materials, and what has no Unity counterpart), each `Mapped`, `Approximated` or `Skipped`, with
+  the Unity component it became and why.
+
+- **Rest pose on `UsdPhysicsJoint`**
+  `MeasurePosition`, `PoseKinematically`, `PivotWorld`, `AxisWorld` and `WorldMotionPerUnit` read
+  and set a joint from the transforms, inside an articulation or not, in edit mode or play mode.
 
 - **Composed Gripper Physics sample**
   A vendor-neutral two-finger gripper authored with core UsdPhysics only, in three versions:
@@ -30,6 +66,77 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `ImportAsync`, and a USD asset shows them as import warnings, once each. What gets imported is
   unchanged. Unknown types are found through the Stage API, so a native plugin older than 0.8.1 does
   not report them.
+
+### Fixed
+
+- **Physics import: joints outside an articulation take their drive.** A revolute or prismatic
+  joint between plain rigid bodies (most SimReady props, such as cabinets and appliances, author
+  no articulation) now gets its `PhysicsDriveAPI` as a `ConfigurableJoint` drive, in the same units
+  as an articulation drive. It used to be dropped with a note.
+- **Physics import: `convexDecomposition` is more than one hull.** The collision mesh is cut into
+  convex pieces, by connected part and, for a single mostly hollow part, by halves, up to eight.
+  It used to be a single hull. This is still not V-HACD, and the log says so.
+- **Physics import: a body with no mass gets density × volume.** When neither a body nor its
+  colliders author a mass, it is derived from the body's density, a collider's or its material's,
+  else PhysX's 1000 kg/m³, times the colliders' volume. Unity's default of 1 kg used to apply.
+- **Mimic joints keep up with a moving leader.** `UsdPhysicsMimicJoint` now gives the follower's
+  drive the coupled velocity as its target velocity, and targets where the leader will be at the
+  end of the step. Before, the drive's damping held the follower back. While the OnRobot RG2 was
+  dragged, its follower finger trailed the leader by 3.5° and its fingertip tilted out of parallel.
+  New `UsdPhysicsJoint.GetVelocity` and `SetDriveTargetVelocity`.
+- **Physics import: `physxJoint:armature` is applied.** It is added to the articulation link's
+  inertia, as Unity's articulation has no armature. Without it, a link far lighter than its drive
+  stopped following the drive: OnRobot RG2's left finger cover arm stayed at its rest angle while
+  the linkage around it moved. It used to be recorded only.
+- **Physics import: approximated colliders no longer push parts apart at rest.** A convex hull made
+  for an SDF, a decomposed mesh or a moving triangle mesh can fill a hollow its neighbours sit in:
+  a cabinet's glass panes sank 9 mm into its body's hull, and the doors swung 15° open. Pairs that
+  overlap at the authored pose only because of the approximation are filtered, and the notes count
+  them.
+- **Physics import: PhysX's solver iterations when none are authored.** That is 16 for a rigid body
+  and 32 for an articulation, the PhysxSchema defaults the stage was tuned against, instead of
+  Unity's 6.
+- **Physics import: no joint friction unless authored.** `ArticulationBody.jointFriction` is set to
+  the authored value or 0, as UsdPhysics and PhysX default. Unity's default of 0.05 used to stay,
+  which stalled light, softly driven links such as gripper fingers.
+
+- **Import no longer aborts when the project or player sits under a non-ASCII path (Windows)**
+  OpenUSD reads `PXR_PLUGINPATH_NAME` in the system code page, so a folder name such as Korean
+  arrived garbled, no `plugInfo.json` was found, and the first import ended the process with exit
+  code 3 and no exception. The plugin folders under the OpenUSD library are now written to the
+  variable relative to that library, which OpenUSD resolves through the Unicode API, so the value
+  stays ASCII wherever the package is installed. A custom `PluginSearchPath` outside that folder that
+  still has non-ASCII characters now throws `UsdExportException` before OpenUSD loads, unless the
+  system code page is UTF-8. macOS and Linux are unchanged. No native rebuild is needed.
+
+- **Concave faces import with their own shape**
+  Every face was triangulated as a fan from its first corner, which fills in the notch of a concave
+  face: a U-shaped face of area 7 imported with area 11. A face the fan cannot cover is now
+  triangulated by ear clipping. Convex faces keep the same triangles as before, and vertices,
+  normals, UVs, material subsets and the triangle count per face are unchanged. Collision meshes
+  read by the physics import get the same triangulation. A face that crosses itself keeps the fan
+  and is reported as an import warning. Needs the 0.8.2 native plugin.
+
+- **Prims that reset their transform stack import where the stage places them**
+  A prim whose `xformOpOrder` begins with `!resetXformStack!` ignores its parents' transforms, but
+  the importer placed it under them: a prim authored at X 2 under a parent at X 10 arrived at X 12.
+  The hierarchy is kept and the node now gets the local transform that puts it where the stage
+  does, at the read time and at each of its own animation samples. A parent with a zero scale, a
+  parent whose rotation and non-uniform scale would need shear to undo, and an animated parent are
+  reported as import warnings instead. Prims inside a point-instancer prototype are unchanged.
+  Needs the 0.8.2 native plugin.
+
+### Performance
+
+- **The macOS native plugin is built with optimisation**
+  Opening a stage on macOS is several times faster on large stages. Implicit shapes (sphere,
+  cylinder, cone, capsule) differ in the last bit of some coordinates, by at most 2.4e-7; every
+  other imported value is identical.
+
+- **Faster mesh and material import**
+  Mesh points, topology, normals and UVs are read in place instead of through copies, and
+  UsdPreviewSurface materials are read with fewer lookups. Imported data is unchanged. Needs the
+  0.8.2 native plugin.
 
 ## [0.8.1-exp.1] - 2026-10-22
 
@@ -762,8 +869,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   coordinates, with transform animation as tracks and animated points as point caches -- and a
   stage that references or payloads a `.drc` mesh composes it. Alembic 1.8.5 (with Imath 3.1.9),
   and Draco 1.5.6, are linked statically into the OpenUSD library: no new files beside it but the
-  two plugins' `plugInfo.json`. In the project, `UsdStageImporter` imports `.abc` files, and `.drc`
-  files on macOS and Linux; `.abc` becomes an override extension when Unity's Alembic package
+  two plugins' `plugInfo.json`. In the project, `UsdStageImporter` imports `.abc` and `.drc`
+  files on every platform; `.abc` becomes an override extension when Unity's Alembic package
   (com.unity.formats.alembic) is installed, as `.usd` does with the USD package. Alembic has no
   units, and OpenUSD reads it as centimeters, as Unity's Alembic package does by default: an
   `.abc` written in meters (Blender's default) imports at 1/100 scale unless
